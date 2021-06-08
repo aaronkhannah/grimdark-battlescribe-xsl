@@ -312,6 +312,7 @@
 
   <xsl:template match="bs:forces/bs:force">
     <xsl:for-each-group select="bs:selections/bs:selection" group-by="bs:categories/bs:category/@name">
+      <xsl:sort select="@name" />
       <div class="category">
         <h1>
           <xsl:value-of select="bs:categories/bs:category/@name" />
@@ -319,6 +320,7 @@
       </div>
       <div>
       <xsl:for-each select="current-group()">
+        <xsl:sort select="@name" />
         <xsl:call-template name="unit-card" />
       </xsl:for-each>
       </div>
@@ -369,7 +371,7 @@
                 <xsl:choose>
                   <xsl:when test=".//bs:selections/bs:selection[starts-with(@name, 'Psychic')]">
                     <xsl:variable name="special-rules" select=".//bs:profiles/bs:profile[@typeName='Unit']/bs:characteristics/bs:characteristic[@name='Special Rules']" />
-                    <xsl:variable name="psychic" select=".//bs:selections/bs:selection[starts-with(@name, 'Psychic')]/@name" />
+                    <xsl:variable name="psychic" select=".//bs:selections/bs:selection[starts-with(@name, 'Psychic(')]/@name" />
                     <xsl:value-of select="translate($special-rules, 'Psychic(1)', $psychic)" />
                   </xsl:when>
                   <xsl:otherwise>
