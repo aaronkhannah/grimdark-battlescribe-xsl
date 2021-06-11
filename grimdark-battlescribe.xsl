@@ -498,8 +498,13 @@
           </tr>
         </thead>
         <tbody>
-        <xsl:for-each select=".//bs:rules/bs:rule">
-          <xsl:sort select="@name" />
+        <xsl:variable name="rules">
+          <xsl:for-each select=".//bs:rules/bs:rule">
+            <xsl:sort select="@name" />
+            <xsl:copy-of select="." />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:for-each select="$rules/bs:rule[not(@name=preceding-sibling::bs:rule/@name)]">
           <tr>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="bs:description" /></td>
