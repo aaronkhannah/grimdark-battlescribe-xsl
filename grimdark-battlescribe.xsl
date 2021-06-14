@@ -424,7 +424,15 @@
   </xsl:template>
 
   <xsl:template name="melee-weapons">
-    <xsl:if test=".//bs:profiles/bs:profile[@typeName='Melee Weapon'] != ''">
+    <xsl:variable name="melee-weapons-var">
+      <xsl:for-each select=".//bs:profiles/bs:profile[@typeName='Melee Weapon']">
+        <xsl:sort select="@name" />
+        <xsl:copy-of select="." />
+      </xsl:for-each>
+    </xsl:variable>
+
+
+    <xsl:if test="$melee-weapons-var != ''">
     <div class="melee-weapons titled-pane">
       <h2>Close Combat Weapons</h2>
       <table>
@@ -436,7 +444,7 @@
           </tr>
         </thead>
         <tbody>
-        <xsl:for-each select=".//bs:profiles/bs:profile[@typeName='Melee Weapon']">
+        <xsl:for-each select="$melee-weapons-var/bs:profile[not(@name = preceding-sibling::bs:profile/@name)]">
           <tr>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="translate(bs:characteristics/bs:characteristic[@name='Attacks'], 'A', '')" /></td>
