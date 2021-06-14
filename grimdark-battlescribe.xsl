@@ -312,7 +312,7 @@
 
   <xsl:template match="bs:forces/bs:force">
     <xsl:for-each-group select="bs:selections/bs:selection" group-by="bs:categories/bs:category/@name">
-      <xsl:sort select="@name" />
+      <xsl:sort select="bs:categories/bs:category/@name" />
       <div class="category">
         <h1>
           <xsl:value-of select="bs:categories/bs:category/@name" />
