@@ -387,7 +387,15 @@
   </xsl:template>
 
   <xsl:template name="ranged-weapons">
-    <xsl:if test=".//bs:profiles/bs:profile[@typeName='Ranged Weapon'] != ''">
+    <xsl:variable name="ranged-weapons-var">
+      <xsl:for-each select=".//bs:profiles/bs:profile[@typeName='Ranged Weapon']">
+        <xsl:sort select="@name" />
+        <xsl:copy-of select="." />
+      </xsl:for-each>
+    </xsl:variable>
+
+
+    <xsl:if test="$ranged-weapons-var != ''">
     <div class="ranged-weapons titled-pane">
       <h2>Ranged Weapons</h2>
       <table>
@@ -400,7 +408,7 @@
           </tr>
         </thead>
         <tbody>
-        <xsl:for-each select=".//bs:profiles/bs:profile[@typeName='Ranged Weapon']">
+        <xsl:for-each select="$ranged-weapons-var/bs:profile[not(@name = preceding-sibling::bs:profile/@name)]">
           <tr>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="bs:characteristics/bs:characteristic[@name='Range']" /></td>
