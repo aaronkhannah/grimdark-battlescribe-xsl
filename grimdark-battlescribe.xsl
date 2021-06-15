@@ -411,9 +411,11 @@
           </tr>
         </thead>
         <tbody>
-        <xsl:for-each-group select="$ranged-weapons-var/bs:selection/bs:profiles/bs:profile" group-by="@name">
+        <xsl:for-each-group select="$ranged-weapons-var/bs:selection/bs:profiles/bs:profile[@typeName='Ranged Weapon']" group-by="@name">
           <tr>
-            <td><xsl:value-of select="../../@number" /></td>
+            <td>
+            <xsl:value-of select="sum(current-group()/../../@number)" />
+            </td>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="bs:characteristics/bs:characteristic[@name='Range']" /></td>
             <td><xsl:value-of select="translate(bs:characteristics/bs:characteristic[@name='Attacks'], 'A', '')" /></td>
