@@ -236,7 +236,6 @@
               background-color: #FFFFFF;
               padding: 0.15em 1em 1.5em 1em;
               margin: 2em 1em;
-              box-shadow: 0.25em 5px #666666;
           }
 
           .unit h1 {
@@ -260,10 +259,14 @@
           }
 
           .ranged-weapons td:nth-child(1) {
+              width: 5%;
+          }
+
+          .ranged-weapons td:nth-child(2) {
               width: 40%;
           }
 
-          .ranged-weapons td:nth-child(2), .ranged-weapons td:nth-child(3) {
+          .ranged-weapons td:nth-child(3), .ranged-weapons td:nth-child(4) {
               width: 8%;
           }
 
@@ -276,7 +279,7 @@
           }
 
           .special-rules {
-              display: none;
+              display: block;
           }
 
           .titled-pane {
@@ -388,12 +391,11 @@
 
   <xsl:template name="ranged-weapons">
     <xsl:variable name="ranged-weapons-var">
-      <xsl:for-each select=".//bs:profiles/bs:profile[@typeName='Ranged Weapon']">
+      <xsl:for-each select=".//bs:selections/bs:selection/bs:profiles/bs:profile[@typeName='Ranged Weapon']">
         <xsl:sort select="@name" />
-        <xsl:copy-of select="." />
+        <xsl:copy-of select="../../." />
       </xsl:for-each>
     </xsl:variable>
-
 
     <xsl:if test="$ranged-weapons-var != ''">
     <div class="ranged-weapons titled-pane">
@@ -401,6 +403,7 @@
       <table>
         <thead>
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>Range</th>
             <th>Attacks</th>
@@ -408,8 +411,9 @@
           </tr>
         </thead>
         <tbody>
-        <xsl:for-each select="$ranged-weapons-var/bs:profile[not(@name = preceding-sibling::bs:profile/@name)]">
+        <xsl:for-each-group select="$ranged-weapons-var/bs:selection/bs:profiles/bs:profile" group-by="@name">
           <tr>
+            <td><xsl:value-of select="../../@number" /></td>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="bs:characteristics/bs:characteristic[@name='Range']" /></td>
             <td><xsl:value-of select="translate(bs:characteristics/bs:characteristic[@name='Attacks'], 'A', '')" /></td>
@@ -424,7 +428,7 @@
               </xsl:choose>            
             </td>
           </tr>
-        </xsl:for-each>
+        </xsl:for-each-group>
         </tbody>
       </table>
     </div>
