@@ -271,10 +271,14 @@
           }
 
           .melee-weapons td:nth-child(1) {
-              width: 40%;
+              width: 5%;
           }
 
           .melee-weapons td:nth-child(2) {
+              width: 40%;
+          }
+
+          .melee-weapons td:nth-child(3) {
               width: 16%;
           }
 
@@ -298,7 +302,8 @@
               background-color: #FFFFFF;
               padding-left: 0.25em;
               padding-right: 0.25em;
-          }      
+          }
+     
         </style>
       </head>
       <body>
@@ -378,7 +383,15 @@
                     <xsl:value-of select="translate($special-rules, 'Psychic(1)', $psychic)" />
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:value-of select=".//bs:profiles/bs:profile[@typeName='Unit']/bs:characteristics/bs:characteristic[@name='Special Rules']" />
+                    <xsl:variable name="special-rules-var" select=".//bs:profiles/bs:profile[@typeName='Unit']/bs:characteristics/bs:characteristic[@name='Special Rules']" />
+                    <xsl:choose>
+                      <xsl:when test="$special-rules-var != ''">
+                        <xsl:value-of select="$special-rules-var" />
+                      </xsl:when>
+                      <xsl:otherwise>
+                        -
+                      </xsl:otherwise>
+                    </xsl:choose>
                   </xsl:otherwise>
                 </xsl:choose>
               </td>
@@ -413,9 +426,7 @@
         <tbody>
         <xsl:for-each-group select="$ranged-weapons-var/bs:selection/bs:profiles/bs:profile[@typeName='Ranged Weapon']" group-by="@name">
           <tr>
-            <td>
-            <xsl:value-of select="sum(current-group()/../../@number)" />
-            </td>
+            <td><xsl:value-of select="sum(current-group()/../../@number)" /></td>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="bs:characteristics/bs:characteristic[@name='Range']" /></td>
             <td><xsl:value-of select="translate(bs:characteristics/bs:characteristic[@name='Attacks'], 'A', '')" /></td>
@@ -439,9 +450,9 @@
 
   <xsl:template name="melee-weapons">
     <xsl:variable name="melee-weapons-var">
-      <xsl:for-each select=".//bs:profiles/bs:profile[@typeName='Melee Weapon']">
+      <xsl:for-each select=".//bs:selections/bs:selection/bs:profiles/bs:profile[@typeName='Melee Weapon']">
         <xsl:sort select="@name" />
-        <xsl:copy-of select="." />
+        <xsl:copy-of select="../../." />
       </xsl:for-each>
     </xsl:variable>
 
@@ -452,14 +463,16 @@
       <table>
         <thead>
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>Attacks</th>
             <th>Special Rules</th>
           </tr>
         </thead>
         <tbody>
-        <xsl:for-each select="$melee-weapons-var/bs:profile[not(@name = preceding-sibling::bs:profile/@name)]">
+        <xsl:for-each-group select="$melee-weapons-var/bs:selection/bs:profiles/bs:profile[@typeName='Melee Weapon']" group-by="@name">
           <tr>
+            <td><xsl:value-of select="sum(current-group()/../../@number)" /></td>
             <td><xsl:value-of select="@name" /></td>
             <td><xsl:value-of select="translate(bs:characteristics/bs:characteristic[@name='Attacks'], 'A', '')" /></td>
             <td>
@@ -473,7 +486,7 @@
               </xsl:choose>
             </td>
           </tr>
-        </xsl:for-each>
+        </xsl:for-each-group>
         </tbody>
       </table>
     </div>
